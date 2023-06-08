@@ -33,7 +33,12 @@ async function run() {
 
 
     app.get('/addToy', async (req, res) => {
-      const result = await toyCollection.find().toArray();
+      let query = {};
+      if (req.query?.email) {
+        query = { seller_email: req.query.email }
+      }
+
+      const result = await toyCollection.find(query).toArray();
       res.send(result);
     })
 
