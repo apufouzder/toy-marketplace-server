@@ -38,7 +38,14 @@ async function run() {
         query = { seller_email: req.query.email }
       }
 
-      const result = await toyCollection.find(query).toArray();
+      let sort = {};
+      if (req.query?.sort === 'desc') {
+        sort = { price: -1 };
+      } else if (req.query?.sort === 'asc') {
+        sort = { price: 1 };
+      }
+
+      const result = await toyCollection.find(query).sort(sort).toArray();
       res.send(result);
     })
 
