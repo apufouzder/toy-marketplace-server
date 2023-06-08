@@ -32,6 +32,10 @@ async function run() {
     const toyCollection = client.db('pawToy').collection('toys');
 
 
+    app.get('/addToy', async (req, res) => {
+      const result = await toyCollection.find().toArray();
+      res.send(result);
+    })
 
     app.post('/addToy', async (req, res) => {
       const toy = req.body;
