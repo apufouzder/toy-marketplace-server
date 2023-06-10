@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 require('dotenv').config();
-const port = process.env.PORT || 4000;
+const port = process.env.PORT || 3000;
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 app.use(cors());
@@ -22,7 +22,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    client.connect();
 
     const toyCollection = client.db('pawToy').collection('toys');
 
@@ -57,11 +57,10 @@ async function run() {
       res.send(result);
     });
 
-    app.put('/toy/:id', async (req, res) => {
+    app.patch('/toy/:id', async (req, res) => {
       const id = req.params.id;
       const updatedToy = req.body;
-      console.log('updatedToy', updatedToy);
-    
+
       filter = { _id: new ObjectId(id) }
       const options = { upsert: true }
       const updateUser = {
@@ -71,11 +70,11 @@ async function run() {
           description: updatedToy.description
         }
       }
-      
-        const result = await toyCollection.updateOne(filter, updateUser, options);
-        if (result.modifiedCount > 0) {
-          res.send(result);
-        }
+
+      const result = await toyCollection.updateOne(filter, updateUser, options);
+      if (result.modifiedCount > 0) {
+        res.send(result);
+      }
     });
 
     app.delete('/toy/:id', async (req, res) => {
